@@ -3,12 +3,19 @@ const express = require('express');
 
 const app = express();
 
+// Read tours-simple.json file
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
 app.get("/api/v1/tours", (req, res)=>{
     res
         .status(200)
-        .json(tours);
+        .json({
+            // Envelop data using JSend format
+            status: "success",
+            data: {
+                tours
+            }
+        });
     
 });
 
