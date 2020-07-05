@@ -10,6 +10,7 @@ app.use(express.json());
 // Read tours-simple.json file
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
+// Get all tours
 app.get("/api/v1/tours", (req, res)=>{
     res
         .status(200)
@@ -23,6 +24,32 @@ app.get("/api/v1/tours", (req, res)=>{
     
 });
 
+// Get one tour
+app.get("/api/v1/tours/:id", (req, res)=>{
+    const id = req.params.id * 1; // convert reauest id to number
+    const tour = tours.find(tour => tour.id === id);
+
+    // if (id > tours.length) {
+    if (!tour) {
+        res.status(404).json({
+            status: "fail",
+            message: "Invalid id"
+        });
+    }
+
+    
+    res
+        .status(200)
+        .json({
+            status: "success",
+            data: {
+                tour
+            }
+        });
+    
+});
+
+// Create a new tour
 app.post("/api/v1/tours", (req, res)=>{
     // Generate new tour id from last tour id + 1 
     const newId = tours[tours.length -1].id + 1;
