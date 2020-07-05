@@ -4,23 +4,33 @@ const { send } = require("process");
 
 const app = express();
 
-// Middleware to get data from request
+// Global middlewares used for all requests
+// Middleware to access data from request object
 app.use(express.json());
+app.use((req, res, next) => {
+    console.log("Hello from middleware 🖐");
+    next();
+});
+
+app.use((req, res, next) => {
+    // Add time to the request
+    req.requestTime = new Date().toISOString();
+    next();
+});
 
 // Read tours-simple.json file
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
 // Get all tours
 const getAllTours = (req, res) => {
-    res
-        .status(200)
-        .json({
-            // Envelop data using JSend format
-            status: "success",
-            data: {
-                tours
-            }
-        });
+    res.status(200).json({
+        // Envelop data using JSend format
+        status: "success",
+        requesteAt: req.requestTime,
+        data: {
+            tours
+        }
+    });
     
 }
 
