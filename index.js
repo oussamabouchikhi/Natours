@@ -49,6 +49,27 @@ app.get("/api/v1/tours/:id", (req, res)=>{
     
 });
 
+
+// Update one tour
+app.patch("/api/v1/tours/:id", (req, res)=>{
+    const id = req.params.id * 1;
+    if (id > tours.length) {
+        res.status(404).json({
+            status: "fail",
+            message: "Invalid id"
+        });
+    }
+    
+    res.status(200).json({
+        status: "success",
+        data: {
+            tour: "<Updated tour here>"
+        }
+    });
+    
+});
+
+
 // Create a new tour
 app.post("/api/v1/tours", (req, res)=>{
     // Generate new tour id from last tour id + 1 
