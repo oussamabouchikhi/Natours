@@ -1,10 +1,14 @@
 const fs = require("fs");
 const express = require('express');
 const { send } = require("process");
+const morgan = require('morgan');
 
 const app = express();
 
+/** 1- Middlewares **/
+
 // Global middlewares used for all requests
+app.use(morgan("dev"));
 // Middleware to access data from request object
 app.use(express.json());
 app.use((req, res, next) => {
@@ -21,6 +25,8 @@ app.use((req, res, next) => {
 // Read tours-simple.json file
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
+
+/** 2- Route Handlers **/
 // Get all tours
 const getAllTours = (req, res) => {
     res.status(200).json({
@@ -115,14 +121,15 @@ const createTour = (req, res)=>{
     res.send("Tour created successfully");
 }
 
+/** 3- Routes **/
 // app.get("/api/v1/tours", getAllTours);
 // app.get("/api/v1/tours/:id", getTour);
 // app.patch("/api/v1/tours/:id", updateTour);
 // app.delete("/api/v1/tours/:id", deleteTour);
 // app.post("/api/v1/tours", createTour);
-
 app.route("/api/v1/tours").get(getAllTours).post(createTour);
 app.route("/api/v1/tours/:id").get(getTour).patch(updateTour).delete(deleteTour);
 
+/** 4- Start server **/
 const PORT = 3000;
 app.listen(PORT, ()=> console.log(`App running at: localhost:${PORT}`));
