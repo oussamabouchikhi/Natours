@@ -162,10 +162,19 @@ const createUser = (req, res) => {
 }
 
 /** 3- Routes **/
-app.route("/api/v1/tours").get(getAllTours).post(createTour);
-app.route("/api/v1/tours/:id").get(getTour).patch(updateTour).delete(deleteTour);
-app.route("/api/v1/users").get(getAllUsers).post(createUser);
-app.route("/api/v1/users/:id").get(getUser).patch(updateUser).delete(deleteUser);
+
+const toursRouter = express.Router();
+const usersRouter = express.Router();
+
+toursRouter.route("/").get(getAllTours).post(createTour);
+toursRouter.route("/:id").get(getTour).patch(updateTour).delete(deleteTour);
+
+usersRouter.route("/").get(getAllUsers).post(createUser);
+usersRouter.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
+
+// Mounting routers
+app.use("/api/v1/tours", toursRouter);
+app.use("/api/v1/users", usersRouter);
 
 /** 4- Start server **/
 const PORT = 3000;
