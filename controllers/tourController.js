@@ -4,6 +4,9 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+/*
+- Check if tour id exists
+*/
 exports.checkID = (req, res, next, val) => {
   console.log(`Tour id is: ${val}`);
 
@@ -16,6 +19,10 @@ exports.checkID = (req, res, next, val) => {
   next();
 };
 
+/*
+* Check if user wants to create a tour without
+* specifying the tour name or price
+*/
 exports.checkBody = (req, res, next) => {
   if (!req.body.name || !req.body.price) {
     return res.status(400).json({
