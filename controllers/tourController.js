@@ -20,8 +20,6 @@ exports.getAllTours = async (req, res) => {
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`);
 
     let query = Tour.find(JSON.parse(queryStr));
-    // EXECUTE QUERY
-    const tours = await query;
 
     // 2)- Sorting
     /*
@@ -36,6 +34,18 @@ exports.getAllTours = async (req, res) => {
       query = query.sort('-createdAt');
     }
 
+    // 3)- Fields Limiting
+    /* Select(project) only specified fields */
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+console.log(fields);
+      query = query.select(fields);
+    } else { // default fields
+      query = query.select('-__v'); // exclude __v field
+    }
+
+    // EXECUTE QUERY
+    const tours = await query;
 
     // const tours = await Tour.find()
     //   .where('duration')
