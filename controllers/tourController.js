@@ -4,13 +4,13 @@ exports.getAllTours = async (req, res) => {
 
   try {
     // BUILD QUERY
-    // 1)- Filtering
+    // 1) a- Filtering
     const queryObj = {...req.query};
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach(field => delete queryObj[field]);
-    console.log(req.query, queryObj);
+    // console.log(req.query, queryObj);
 
-    // 2)- Advanced Filtering
+    // 1) b- Advanced Filtering
     /*
     * As we filter difficulty[gte]=5 we will get an object {difficulty: {gte: 5}}
     * so we want to replace these filters with MongoDB functions i.e: $gte
@@ -19,10 +19,22 @@ exports.getAllTours = async (req, res) => {
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`);
 
-    const query = Tour.find(JSON.parse(queryStr));
-    console.log(JSON.parse(queryStr));
+    let query = Tour.find(JSON.parse(queryStr));
     // EXECUTE QUERY
     const tours = await query;
+
+    // 2)- Sorting
+    /*
+    * Ascending: sort=criteria, Descending: sort=-criteria
+    * Sort by another criteria if we have similar ones
+    * sort=criteria1,criteria2 => sort('criteria1 criteria2')
+    */
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else { // default sort
+      query = query.sort('-createdAt');
+    }
 
 
     // const tours = await Tour.find()
