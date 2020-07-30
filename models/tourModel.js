@@ -54,7 +54,11 @@ const tourSchema = new mongoose.Schema({
     default: Date.now(),
     select: false
   },
-  startDates: [Date]
+  startDates: [Date],
+  secretTour: {
+    type: Boolean,
+    default: false
+  }
 }, { // Show virtual props each time data outputed as Json or Object
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
@@ -91,6 +95,23 @@ tourSchema.pre('save', function (next) {
 //   console.log(this.doc);
 //   next();
 // });
+
+/*
+* QUERY MIDDLEWARE: run before executing queries that starts with find (find, findOne, findById ...)
+* Filter out secret tours
+* ? NOTE: this refers to a query object
+*
+**/
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+   next();
+});
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took: ${Date.now() - this.start} milliseconds`);
+  console.log(docs);
+   next();
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 
