@@ -53,6 +53,19 @@ const tourSchema = new mongoose.Schema({
     select: false
   },
   startDates: [Date]
+}, { // Show virtual props each time data outputed as Json or Object
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+/*
+* durationWeeks is a virtual property which can be easily calculated
+* from duration to save little bit of extra storage in DB
+* ! NOTE: we used a regular function to get access to this to refer to the actual document
+* ! NOTE: we can not query by virtual properties
+*/
+tourSchema.virtual('durationWeeks').get(function() {
+  return this.duration / 7;
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
