@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema({
   name: {
@@ -6,6 +7,7 @@ const tourSchema = new mongoose.Schema({
     required: [true, 'A tour must have a name'],
     unique: true
   },
+  name: String,
   duration: {
     type: Number,
     required: [true, 'A tour must have a duration']
@@ -62,11 +64,33 @@ const tourSchema = new mongoose.Schema({
 * durationWeeks is a virtual property which can be easily calculated
 * from duration to save little bit of extra storage in DB
 * ! NOTE: we used a regular function to get access to this to refer to the actual document
-* ! NOTE: we can not query by virtual properties
+* ? NOTE: we can not query by virtual properties
 */
 tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
+
+/*
+* DOCUMENT MIDDLEWARE(HOOK): runs after save() & create()
+* ? NOTE: it doesn't get triggered after running insertMany()
+*
+**/
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+// tourSchema.pre('save', function (next) {
+//   console.log('Document is being saved ...');
+//   next();
+// });
+
+/*
+* Post 'save' Hook runs after pre 'save' Hook
+**/
+// tourSchema.post('save', function (doc, next) {
+//   console.log(this.doc);
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 
