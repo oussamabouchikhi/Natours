@@ -99,7 +99,7 @@ tourSchema.pre('save', function (next) {
 /*
 * QUERY MIDDLEWARE: run before executing queries that starts with find (find, findOne, findById ...)
 * Filter out secret tours
-* ? NOTE: this refers to a query object
+* ? NOTE: this keyword refers to a query object
 *
 **/
 tourSchema.pre(/^find/, function (next) {
@@ -111,6 +111,17 @@ tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took: ${Date.now() - this.start} milliseconds`);
   console.log(docs);
    next();
+});
+
+/*
+* AGGREGATION MIDDLEWARE: run before executing aggregation
+* Exclude secret tours from being used in other results
+* ? NOTE: this keyword refers to a aggregation object
+*
+**/
+tourSchema.pre('aggregate', function (docs, next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  next();
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
