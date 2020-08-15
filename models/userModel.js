@@ -55,6 +55,15 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
+userSchema.pre('save', function() {
+  // If the password is not modified or user is just created go to next middleware
+  if (!this.isModified('password') || this.isNew) return next();
+
+  // Because saving password might sometimes take much time(after JWT token) we subtract 1sec as a trick
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 userSchema.methods.correctPassword = async function(
   candidatePassword,
   userPassword
