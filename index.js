@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -36,7 +37,13 @@ app.use(express.json({ limit: '10kb' }));
 app.use(mongoSanitize());
 
 // Sanitize data against XSS
-app.use(xss())
+app.use(xss());
+
+// Prevent paramter pollution (if some params are duplicated it uses the last one)
+// [whitelist]: params allowed to be duplicated
+app.use(hpp({
+  whitelist: ['duration', 'ratingsAverage', 'ratingsQuantity', 'maxGroupSize', 'difficulty', 'price']
+}));
 
 // Serve static files
 app.use(express.static(`${__dirname}/public`));
