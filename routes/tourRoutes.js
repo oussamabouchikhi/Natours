@@ -11,11 +11,14 @@ const {
   deleteTour
 } = require('./../controllers/tourController');
 const authController = require('./../controllers/authController');
+const reviewRouter = require('./../routes/reviewRouter');
 
 const router = express.Router();
 
 // Param middleware (runs when passing a param to our url)
 // router.param('id', checkID);
+
+router.use('/:tourId/reviews', reviewRouter);
 
 router
   .route('/top-5-cheap')
