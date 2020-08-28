@@ -125,6 +125,17 @@ tourSchema.virtual('durationWeeks').get(function() {
 });
 
 /*
+  Instead of use child ref to get Tour reviews we use
+  mongoose virtual populate and that keeps track of reviews
+  without parsing reviews into the Tour
+*/
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
+})
+
+/*
 * DOCUMENT MIDDLEWARE(HOOK): runs after save() & create()
 * ? NOTE: it doesn't get triggered after running insertMany()
 *
