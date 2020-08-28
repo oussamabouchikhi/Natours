@@ -1,13 +1,15 @@
 const express = require('express');
-const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
-const hpp = require('hpp');
 
-const tourRouter = require('./routes/tourRoutes');
-const userRouter = require('./routes/userRoutes');
+const morgan        = require('morgan');
+const rateLimit     = require('express-rate-limit');
+const helmet        = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss           = require('xss-clean');
+const hpp           = require('hpp');
+
+const tourRouter   = require('./routes/tourRoutes');
+const userRouter   = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
@@ -62,5 +64,6 @@ app.use((req, res, next) => {
 // 3) ROUTES
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 module.exports = app;
