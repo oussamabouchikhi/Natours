@@ -12,11 +12,12 @@ const authController = require('./../controllers/authController');
 // mergeParams: allow access tour & user params
 const router = express.Router({ mergeParams: true });
 
+router.use(authController.protect);
+
 router
   .route('/')
     .get(getAllReviews)
     .post(
-      authController.protect,
       authController.restrictTo('user'),
       setTourAndUserIDs,
       createReview
@@ -25,5 +26,5 @@ router
 router
   .route('/:id')
     .get(getReview)
-    .patch(updateReview)
-    .delete(deleteReview)
+    .patch(authController.restrictTo('user', 'admin'), updateReview)
+    .delete(authController.restrictTo('user', 'admin'), deleteReview)

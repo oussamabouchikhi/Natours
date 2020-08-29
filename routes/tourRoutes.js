@@ -10,7 +10,7 @@ const {
   updateTour,
   deleteTour
 } = require('./../controllers/tourController');
-const authController = require('./../controllers/authController');
+const {protect, restrictTo} = require('./../controllers/authController');
 const reviewRouter = require('./../routes/reviewRouter');
 
 const router = express.Router();
@@ -30,17 +30,17 @@ router
 
 router
   .route('/monthly-plan/:year')
-  .get(getMonthlyPlan);
+  .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
 
 router
   .route('/')
-  .get(authController.protect, authController.restrictTo('admin', 'lead-guide'), getAllTours)
-  .post(createTour);
+  .get(getAllTours)
+  .post(protect, restrictTo('admin', 'lead-guide'), createTour);
 
 router
   .route('/:id')
   .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
+  .patch(protect, restrictTo('admin', 'lead-guide'), updateTour)
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 module.exports = router;
