@@ -28,3 +28,6 @@ router
     .get(getReview)
     .patch(authController.restrictTo('user', 'admin'), updateReview)
     .delete(authController.restrictTo('user', 'admin'), deleteReview)
+
+
+module.exports = router;

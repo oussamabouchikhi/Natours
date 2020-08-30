@@ -11,7 +11,7 @@ const {
   deleteTour
 } = require('./../controllers/tourController');
 const {protect, restrictTo} = require('./../controllers/authController');
-const reviewRouter = require('./../routes/reviewRouter');
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router();
 
