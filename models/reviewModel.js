@@ -30,6 +30,12 @@ const reviewSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
+/* Prevent duplicate reviews
+* both userId & tourId must be unique at the same time
+* to not let the same user make multiple reviews on the same tour
+*/
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   // this.populate({
   //   path: 'tour',
@@ -47,7 +53,6 @@ reviewSchema.pre(/^find/, function (next) {
 });
 
 /*
-*
 * 'this' refers to the Review Model
 **/
 reviewSchema.statics.calcAverageRatings = async function (tourId) {
