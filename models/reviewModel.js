@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Tour = require('./tourModel');
-const User = require('./userModel');
 
 const reviewSchema = new mongoose.Schema({
   review: {
@@ -45,6 +44,59 @@ reviewSchema.pre(/^find/, function (next) {
   });
 
   next();
+});
+
+/*
+*
+* 'this' refers to the Review Model
+**/
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId }
+    },
+    {
+      $group: {
+        _id: { '$tour' },
+        numRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      }
+    }
+  ]);
+
+  if ( stats.length > 0 ) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].numRating,
+      ratingsAverage: stats[0].avgRating
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5
+    });
+  }
+}
+
+/*
+* 'this' refers to the current document (a review)
+* 'this.constructor' refers to the Review Model
+*/
+reviewSchema.post('save', function () {
+  this.constructor.calcAverageRatings(this.tour);
+});
+
+/*
+* findByIdAndUpdate & findByIdAndDelete | ById => One (shorthand)
+* Get current doc & pass it from pre to post middleware (trick)
+* Since we cannot perform findOne on post middleware because the QUERY is already executed
+*/
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.rev = await this.findOne(); // Get current review
+  next()
+});
+reviewSchema.post(/^findOneAnd/, async function () {
+  await this.rev.constructor.calcAverageRatings(this.rev.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);
