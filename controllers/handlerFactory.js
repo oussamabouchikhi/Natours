@@ -24,7 +24,7 @@ exports.getAll = (Model, populateOptions) => catchAsync(async (req, res) => {
       .sort()
       .fieldsLimiting()
       .paginate();
-    const document = await features.query;
+    const document = await features.query; // .explain() to show stats about query
 
     // SEND RESPONSE
     res.status(200).json({

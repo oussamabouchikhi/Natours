@@ -115,6 +115,16 @@ const tourSchema = new mongoose.Schema({
 });
 
 /*
+* Improve read perforamnce using indexes
+* ! indexes take much memory ressources so use them wisely
+* 1: ascending, -1: descending
+*/
+// tourSchema.index({ price: 1 });
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // compound index
+tourSchema.index({ slug: 1 });
+
+
+/*
 * durationWeeks is a virtual property which can be easily calculated
 * from duration to save little bit of extra storage in DB
 * ! NOTE: we used a regular function to get access to this to refer to the actual document
