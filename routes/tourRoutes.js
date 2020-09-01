@@ -4,6 +4,7 @@ const {
   getAllTours,
   getTourStats,
   getMonthlyPlan,
+  getToursWithin,
   checkBody,
   createTour,
   getTour,
@@ -31,6 +32,12 @@ router
 router
   .route('/monthly-plan/:year')
   .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
+
+router.route('/tours-within/:distance/center/:latlng/unit/:unit')
+.get(getToursWithin);
+//                      /tours-within/233/center/-40,45/unit/mi'
+// or with query string /tours-within?distance=233&center=40,45&unit=mi
+
 
 router
   .route('/')
