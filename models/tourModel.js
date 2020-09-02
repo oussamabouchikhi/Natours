@@ -201,10 +201,10 @@ tourSchema.post(/^find/, function (docs, next) {
 * ? NOTE: this keyword refers to a aggregation object
 *
 **/
-tourSchema.pre('aggregate', function (docs, next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
+// tourSchema.pre('aggregate', function (docs, next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 
