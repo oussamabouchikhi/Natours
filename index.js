@@ -12,10 +12,10 @@ const tourRouter   = require('./routes/tourRoutes');
 const userRouter   = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 
+const app = express();
+
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
-
-const app = express();
 
 // 1) MIDDLEWARES
 
@@ -68,7 +68,10 @@ app.use((req, res, next) => {
 // 3) ROUTES
 
 app.get('/', (req, res) => {
-  res.status(200).render('base');
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Oussama'
+  });
 })
 
 app.use('/api/v1/tours', tourRouter);

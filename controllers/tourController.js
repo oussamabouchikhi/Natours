@@ -137,7 +137,7 @@ exports.getDistances = catchAsync(async (req, res) => {
   const {latlng, unit} = req.params;
   const [lat, lng] = latlng.split(',');
   // Covert to miles or kilometers
-  const multiplier = unit === 'mi' ? : 0.000621371 : 0.001;
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
 
   if (!lat || !lng) {
     next(

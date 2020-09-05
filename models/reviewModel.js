@@ -62,7 +62,7 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
     {
       $group: {
-        _id: { '$tour' },
+        _id: '$tour',
         numRating: { $sum: 1 },
         avgRating: { $avg: '$rating' },
       }
