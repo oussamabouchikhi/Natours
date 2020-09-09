@@ -21,7 +21,7 @@ exports.getTour = catchAsync(async (req, res) => {
   // 2)- Build template (views/tour.pug)
   // 3)- Render tha template usnig tour date from 1)
   res.status(200).render('tour', {
-    title: 'The Forest Hiker',
+    title: `${tour.name} Tour`,
     tour
   });
 });
