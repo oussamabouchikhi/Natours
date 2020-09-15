@@ -119,7 +119,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 // Only for rendered pages, no errors!
-exports.isLoggedIn = (req, res, next) => {
+exports.isLoggedIn = async(req, res, next) => {
   try {
     // 1) Getting token and check if it's in cookies
     if (req.cookies.jwt) {
@@ -146,7 +146,7 @@ exports.isLoggedIn = (req, res, next) => {
     return next();
   }
   next();
-});
+}
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
