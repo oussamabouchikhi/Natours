@@ -23,7 +23,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   if (!tour) {
     return next(new AppError('There is no tour with that name', 404));
   }
-  
+
   // 2)- Build template (views/tour.pug)
   // 3)- Render tha template usnig tour date from 1)
   res.status(200).render('tour', {
@@ -35,5 +35,11 @@ exports.getTour = catchAsync(async (req, res, next) => {
 exports.getLoginForm = (req, res) => {
   res.status(200).render('login', {
     title: 'Log into your account'
+  });
+}
+
+exports.getAccount = (req, res) => {
+  res.status(200).render('account', {
+    title: 'Your account'
   });
 }
