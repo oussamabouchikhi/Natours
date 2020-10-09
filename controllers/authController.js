@@ -37,12 +37,9 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm
-  });
+  const newUser = await User.create(req.body);
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  await new Email(newUs, url).sendWelcome();
 
   createSendToken(newUser, 201, res);
 });
@@ -176,11 +173,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   resetURL = `${req.protocol}://${req.get('host')}/api/v1/resetPassword/${resetToken}`;
   const message = `Forgot your password? please submit a patch request with your new password & passwordConfirm to: ${resetURL}. \n If you didn't forgot your password, please ignore this email.`
   try {
-    await sendEmail({
-      email: user.email, // or req.body.email
-      subject: 'Your password reset token (valid for 10 min)',
-      message
-    })
+    // await sendEmail({
+    //   email: user.email, // or req.body.email
+    //   subject: 'Your password reset token (valid for 10 min)',
+    //   message
+    // })
     res.status(200).json({status: 'success', message: 'token sent to email'});
   } catch (err) {
     user.passwordResetToken = undefined;
